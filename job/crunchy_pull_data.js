@@ -151,11 +151,12 @@ function createHistoricalJSONByLang(allItems, lang) {
 function findMissingAnime(allItems) {
     try {
         const now = new Date();
-        now.setDate(now.getDate() - 1);
-        const isoDateWithTime = now.toISOString(); // Example: "2025-11-07T23:57:00.000Z"
-        const dateOnly = isoDateWithTime.split('T')[0].replace(/\-/ig, ''); // Result: "20251107"
-
-        const yesterdayAnime = JSON.parse(fs.readFileSync('data/all_anime_' + dateOnly + '.json', 'utf8'));
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const isoDateWithTime = yesterday.toISOString(); // Example: "2025-11-07T23:57:00.000Z"
+        const yesterdayDateOnly = isoDateWithTime.split('T')[0].replace(/\-/ig, ''); // Result: "20251107"
+        const dateOnly = now.toISOString().split('T')[0].replace(/\-/ig, '');;
+        const yesterdayAnime = JSON.parse(fs.readFileSync('data/all_anime_' + yesterdayDateOnly + '.json', 'utf8'));
 
         let animeMap = {};
         for (let anime of yesterdayAnime) {
@@ -169,6 +170,9 @@ function findMissingAnime(allItems) {
         }
 
         fs.writeFileSync('data/missing_anime.json', JSON.stringify(missingAnime, null, 2), 'utf8');
+
+
+        fs.writeFileSync('data/missing_anime_' + dateOnly + '.json', JSON.stringify(missingAnime, null, 2), 'utf8');
         // console.log('Missing Anime:', missingAnime);
     }
     catch (err) {
