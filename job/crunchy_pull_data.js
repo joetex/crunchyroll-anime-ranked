@@ -95,6 +95,8 @@ async function main() {
     // Navigate the page to a URL.
     await page.goto('https://www.crunchyroll.com/videos/popular', { waitUntil: 'networkidle2' });
 
+    const pageSourceHTML = await page.content();
+    console.log("Page Source:", pageSourceHTML);
     await page.screenshot({ path: 'job/screenshot.png' });
 }
 
